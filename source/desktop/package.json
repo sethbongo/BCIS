@@ -1,5 +1,6 @@
 {
   "name": "@bcis/desktop",
+  "productName": "BCIS Billing and Collection",
   "version": "1.0.0",
   "private": true,
   "description": "BCIS Subscription Billing and Collection System - desktop client",
