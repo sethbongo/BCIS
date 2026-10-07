@@ -14,7 +14,8 @@ export default async function setup(): Promise<void> {
   process.env.DATABASE_URL = testUrl;
   process.env.NODE_ENV = 'test';
   process.env.DATA_DIR = 'tests/.tmp/data';
-  rmSync('tests/.tmp', { recursive: true, force: true });
+  // Only the test data folder is cleared; other files in tests/.tmp (e2e results) are kept.
+  rmSync('tests/.tmp/data', { recursive: true, force: true });
 
   const { sql } = await import('drizzle-orm');
   const { ROLES } = await import('@bcis/shared');
