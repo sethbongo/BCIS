@@ -1,0 +1,26 @@
+appId: ph.bcis.billing
+productName: BCIS Billing and Collection
+copyright: BCIS Laboratory Project
+directories:
+  output: ../../release
+  buildResources: build
+# Everything the app needs is bundled by electron-vite into out/, so no node_modules are packaged.
+files:
+  - out/**
+  - package.json
+asar: true
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  # The laboratory build is unsigned; skipping executable editing also avoids needing
+  # symbolic-link privileges on Windows when building without Developer Mode.
+  signAndEditExecutable: false
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  shortcutName: BCIS Billing
+  artifactName: BCIS-Billing-Setup-${version}.${ext}
+publish: null
