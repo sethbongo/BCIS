@@ -1,0 +1,59 @@
+{
+  "name": "bcis-subscription-billing-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BCIS Subscription Billing and Collection System - Electron clients, Fastify API, PostgreSQL",
+  "type": "module",
+  "workspaces": [
+    "source/shared",
+    "source/api",
+    "source/desktop"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "db:start": "node scripts/localdb.mjs start",
+    "db:stop": "node scripts/localdb.mjs stop",
+    "db:status": "node scripts/localdb.mjs status",
+    "db:generate": "npm run db:generate -w @bcis/api",
+    "db:migrate": "tsx source/api/src/db/migrate.ts",
+    "db:seed": "tsx database/seeds/run.ts base",
+    "db:seed:demo": "tsx database/seeds/run.ts demo",
+    "db:reset": "tsx database/seeds/run.ts reset",
+    "dev": "concurrently -k -n api,desktop -c blue,green \"npm run dev:api\" \"npm run dev:desktop\"",
+    "dev:api": "tsx watch source/api/src/server.ts",
+    "dev:desktop": "npm run dev -w @bcis/desktop",
+    "build": "npm run build -w @bcis/api && npm run build -w @bcis/desktop",
+    "start:api": "node source/api/dist/server.js",
+    "start:desktop": "npm run start -w @bcis/desktop",
+    "dist": "npm run build -w @bcis/desktop && npm run dist -w @bcis/desktop",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:acceptance": "vitest run --project acceptance",
+    "test:e2e": "playwright test -c tests/e2e/playwright.config.ts",
+    "test:report": "vitest run --reporter=default --reporter=json --outputFile.json=tests/.tmp/vitest-results.json && tsx scripts/acceptance-report.ts",
+    "owner:create": "tsx scripts/create-owner.ts",
+    "backup:create": "tsx scripts/backup-now.ts",
+    "reports:samples": "tsx scripts/generate-report-samples.ts",
+    "docs:build": "node scripts/build-docs.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4",
+    "concurrently": "^10.0.5",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "marked": "^18.1.0",
+    "mermaid": "^12.1.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.1",
+    "vitest": "^5.0.3"
+  }
+}

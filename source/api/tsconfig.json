@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["src", "../../database/seeds", "../../tests/acceptance", "../../scripts/*.ts"]
+}

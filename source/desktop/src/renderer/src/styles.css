@@ -1,0 +1,139 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+
+@source '../../../../shared/src';
+
+/* Design tokens from the laboratory brief (section 4.1). */
+@theme {
+  --font-sans: 'Inter Variable', 'Segoe UI', system-ui, sans-serif;
+  --color-navy: #0f2747;
+  --color-navy-600: #173763;
+  --color-navy-900: #0a1c34;
+  --color-accent: #2563eb;
+  --color-accent-600: #1d4ed8;
+  --color-accent-50: #eff5ff;
+  --color-canvas: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  /* Chart roles (validated with the dataviz palette checker against the white surface). */
+  --color-series-1: #2563eb;
+  --color-series-2: #eb6834;
+  --color-ramp-1: #86b6ef;
+  --color-ramp-2: #5598e7;
+  --color-ramp-3: #2a78d6;
+  --color-ramp-4: #1c5cab;
+  --color-ramp-5: #0d366b;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+}
+
+/* Financial values: right-aligned, tabular numerals. */
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+/* ---------- Printing: only the print sheet, never the application chrome ---------- */
+.print-sheet {
+  background: white;
+  color: #0f172a;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.print-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.print-sheet th {
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1.5px solid #0f2747;
+  padding: 4px 6px;
+}
+.print-sheet td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 3px 6px;
+  vertical-align: top;
+}
+.print-sheet tfoot td {
+  border-top: 1.5px solid #0f2747;
+  border-bottom: 0;
+  font-weight: 600;
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+  body {
+    background: white;
+    overflow: visible;
+  }
+  #root,
+  .no-print,
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+  .print-overlay {
+    position: static !important;
+    background: white !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    width: auto !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .print-sheet thead {
+    display: table-header-group;
+  }
+  .print-sheet tr {
+    break-inside: avoid;
+  }
+}

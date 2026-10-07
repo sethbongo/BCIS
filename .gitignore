@@ -1,0 +1,30 @@
+# dependencies / build output
+node_modules/
+dist/
+out/
+*.tsbuildinfo
+
+# secrets and local environment
+.env
+.env.*
+!.env.example
+
+# local PostgreSQL cluster, runtime data (attachments, backups, logs)
+.localdb/
+data/
+
+# installers are large binaries; keep the folder, not the artifacts
+release/*
+!release/README.md
+
+# test output
+test-results/
+playwright-report/
+coverage/
+tests/.tmp/
+
+# editor / OS
+.vscode/*
+!.vscode/extensions.json
+Thumbs.db
+.DS_Store
