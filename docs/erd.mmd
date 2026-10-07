@@ -1,0 +1,408 @@
+%% Overview: all tables and relationships
+erDiagram
+  adjustments
+  application_settings
+  audit_logs
+  backup_history
+  batch_accounts
+  billing_cycles
+  collection_areas
+  collection_batches
+  collector_assignments
+  collector_remittances
+  collectors
+  invoice_items
+  invoices
+  ledger_entries
+  number_sequences
+  payment_allocations
+  payment_proofs
+  payment_reversals
+  payments
+  permissions
+  receipts
+  reconnection_records
+  role_permissions
+  roles
+  service_accounts
+  service_events
+  service_plans
+  service_types
+  sessions
+  subscriber_addresses
+  subscribers
+  suspension_records
+  user_roles
+  users
+  invoices ||--o{ adjustments : "invoice_id"
+  subscribers ||--o{ adjustments : "subscriber_id"
+  collection_batches ||--o{ batch_accounts : "batch_id"
+  subscribers ||--o{ batch_accounts : "subscriber_id"
+  collection_areas ||--o{ collection_batches : "area_id"
+  collectors ||--o{ collection_batches : "collector_id"
+  collection_areas ||--o{ collector_assignments : "area_id"
+  collectors ||--o{ collector_assignments : "collector_id"
+  collection_batches ||--o{ collector_remittances : "batch_id"
+  collectors ||--o{ collector_remittances : "collector_id"
+  invoices ||--o{ invoice_items : "invoice_id"
+  billing_cycles ||--o{ invoices : "billing_cycle_id"
+  service_accounts ||--o{ invoices : "service_account_id"
+  subscribers ||--o{ invoices : "subscriber_id"
+  service_accounts ||--o{ ledger_entries : "service_account_id"
+  subscribers ||--o{ ledger_entries : "subscriber_id"
+  invoices ||--o{ payment_allocations : "invoice_id"
+  payments ||--o{ payment_allocations : "payment_id"
+  payments ||--o{ payment_proofs : "payment_id"
+  subscribers ||--o{ payment_proofs : "subscriber_id"
+  payments ||--o{ payment_reversals : "payment_id"
+  collection_batches ||--o{ payments : "collection_batch_id"
+  collectors ||--o{ payments : "collector_id"
+  subscribers ||--o{ payments : "subscriber_id"
+  payments ||--o{ receipts : "payment_id"
+  invoices ||--o{ reconnection_records : "fee_invoice_id"
+  service_accounts ||--o{ reconnection_records : "service_account_id"
+  suspension_records ||--o{ reconnection_records : "suspension_id"
+  permissions ||--o{ role_permissions : "permission_id"
+  roles ||--o{ role_permissions : "role_id"
+  subscriber_addresses ||--o{ service_accounts : "address_id"
+  collectors ||--o{ service_accounts : "collector_id"
+  service_plans ||--o{ service_accounts : "plan_id"
+  subscribers ||--o{ service_accounts : "subscriber_id"
+  service_accounts ||--o{ service_events : "service_account_id"
+  service_types ||--o{ service_plans : "service_type_id"
+  users ||--o{ sessions : "user_id"
+  subscribers ||--o{ subscriber_addresses : "subscriber_id"
+  collection_areas ||--o{ subscribers : "collection_area_id"
+  collectors ||--o{ subscribers : "collector_id"
+  service_accounts ||--o{ suspension_records : "service_account_id"
+  roles ||--o{ user_roles : "role_id"
+  users ||--o{ user_roles : "user_id"
+
+%% Security
+erDiagram
+  users {
+    integer id PK
+    varchar_40_ username
+  }
+  roles {
+    integer id PK
+    varchar_40_ code
+    varchar_80_ name
+  }
+  permissions {
+    integer id PK
+    varchar_60_ code
+  }
+  role_permissions {
+    integer role_id PK
+    integer permission_id PK
+  }
+  user_roles {
+    integer user_id PK
+    integer role_id PK
+  }
+  sessions {
+    uuid id PK
+    integer user_id FK
+  }
+  permissions ||--o{ role_permissions : "permission_id"
+  roles ||--o{ role_permissions : "role_id"
+  users ||--o{ sessions : "user_id"
+  roles ||--o{ user_roles : "role_id"
+  users ||--o{ user_roles : "user_id"
+
+%% Subscribers and Services
+erDiagram
+  subscribers {
+    integer id PK
+    varchar_20_ account_no
+    enum_subscriber_status status
+    integer collection_area_id FK
+    integer collector_id FK
+    integer created_by FK
+  }
+  subscriber_addresses {
+    integer id PK
+    integer subscriber_id FK
+  }
+  service_types {
+    integer id PK
+    enum_service_type_code code
+    varchar_60_ name
+  }
+  service_plans {
+    integer id PK
+    varchar_20_ code
+    varchar_100_ name
+    integer service_type_id FK
+  }
+  service_accounts {
+    integer id PK
+    varchar_20_ account_no
+    integer subscriber_id FK
+    integer plan_id FK
+    integer address_id FK
+    date activation_date
+    date billing_start_date
+    enum_service_account_status status
+    integer collector_id FK
+    integer created_by FK
+  }
+  service_events {
+    integer id PK
+    integer service_account_id FK
+    date effective_date
+    integer created_by FK
+  }
+  suspension_records {
+    integer id PK
+    integer service_account_id FK
+    date effective_date
+    integer approved_by FK
+  }
+  reconnection_records {
+    integer id PK
+    integer service_account_id FK
+    integer suspension_id FK
+    date request_date
+    date completion_date
+    bigint fee_amount
+    integer fee_invoice_id FK
+    integer technician_user_id FK
+    enum_reconnection_status status
+    integer requested_by FK
+    integer completed_by FK
+  }
+  adjustments
+  batch_accounts
+  invoices
+  ledger_entries
+  payment_proofs
+  payments
+  collectors
+  collection_areas
+  subscribers ||--o{ adjustments : "subscriber_id"
+  subscribers ||--o{ batch_accounts : "subscriber_id"
+  service_accounts ||--o{ invoices : "service_account_id"
+  subscribers ||--o{ invoices : "subscriber_id"
+  service_accounts ||--o{ ledger_entries : "service_account_id"
+  subscribers ||--o{ ledger_entries : "subscriber_id"
+  subscribers ||--o{ payment_proofs : "subscriber_id"
+  subscribers ||--o{ payments : "subscriber_id"
+  invoices ||--o{ reconnection_records : "fee_invoice_id"
+  service_accounts ||--o{ reconnection_records : "service_account_id"
+  suspension_records ||--o{ reconnection_records : "suspension_id"
+  subscriber_addresses ||--o{ service_accounts : "address_id"
+  collectors ||--o{ service_accounts : "collector_id"
+  service_plans ||--o{ service_accounts : "plan_id"
+  subscribers ||--o{ service_accounts : "subscriber_id"
+  service_accounts ||--o{ service_events : "service_account_id"
+  service_types ||--o{ service_plans : "service_type_id"
+  subscribers ||--o{ subscriber_addresses : "subscriber_id"
+  collection_areas ||--o{ subscribers : "collection_area_id"
+  collectors ||--o{ subscribers : "collector_id"
+  service_accounts ||--o{ suspension_records : "service_account_id"
+
+%% Billing and Ledger
+erDiagram
+  billing_cycles {
+    integer id PK
+    char_7_ period
+    integer last_generated_by FK
+  }
+  invoices {
+    integer id PK
+    varchar_20_ invoice_no
+    integer subscriber_id FK
+    integer service_account_id FK
+    integer billing_cycle_id FK
+    date invoice_date
+    date due_date
+    bigint total
+    bigint amount_paid
+    bigint balance
+    enum_invoice_status status
+    integer finalized_by FK
+    integer voided_by FK
+    integer created_by FK
+  }
+  invoice_items {
+    integer id PK
+    integer invoice_id FK
+    bigint unit_amount
+    bigint amount
+  }
+  adjustments {
+    integer id PK
+    varchar_20_ adjustment_no
+    integer subscriber_id FK
+    integer invoice_id FK
+    bigint amount
+    integer created_by FK
+  }
+  ledger_entries {
+    bigint id PK
+    integer subscriber_id FK
+    integer service_account_id FK
+    date entry_date
+    varchar_30_ reference_no
+    bigint debit
+    bigint credit
+    integer created_by FK
+  }
+  subscribers
+  service_accounts
+  payment_allocations
+  reconnection_records
+  invoices ||--o{ adjustments : "invoice_id"
+  subscribers ||--o{ adjustments : "subscriber_id"
+  invoices ||--o{ invoice_items : "invoice_id"
+  billing_cycles ||--o{ invoices : "billing_cycle_id"
+  service_accounts ||--o{ invoices : "service_account_id"
+  subscribers ||--o{ invoices : "subscriber_id"
+  service_accounts ||--o{ ledger_entries : "service_account_id"
+  subscribers ||--o{ ledger_entries : "subscriber_id"
+  invoices ||--o{ payment_allocations : "invoice_id"
+  invoices ||--o{ reconnection_records : "fee_invoice_id"
+
+%% Payments and Receipts
+erDiagram
+  payments {
+    integer id PK
+    integer subscriber_id FK
+    date payment_date
+    bigint amount
+    varchar_80_ reference_no
+    enum_payment_status status
+    bigint unapplied_amount
+    integer received_by FK
+    integer collector_id FK
+    integer collection_batch_id FK
+  }
+  payment_allocations {
+    integer id PK
+    integer payment_id FK
+    integer invoice_id FK
+    bigint amount
+    integer created_by FK
+  }
+  payment_proofs {
+    integer id PK
+    integer subscriber_id FK
+    integer payment_id FK
+    varchar_80_ reference_no
+    bigint amount
+    date transaction_date
+    enum_proof_status status
+    integer submitted_by FK
+    integer reviewed_by FK
+  }
+  payment_reversals {
+    integer id PK
+    varchar_20_ reversal_no
+    integer payment_id FK
+    bigint amount
+    integer reversed_by FK
+  }
+  receipts {
+    integer id PK
+    varchar_20_ receipt_no
+    integer payment_id FK
+    enum_receipt_status status
+    integer issued_by FK
+    integer voided_by FK
+  }
+  invoices
+  subscribers
+  collection_batches
+  collectors
+  invoices ||--o{ payment_allocations : "invoice_id"
+  payments ||--o{ payment_allocations : "payment_id"
+  payments ||--o{ payment_proofs : "payment_id"
+  subscribers ||--o{ payment_proofs : "subscriber_id"
+  payments ||--o{ payment_reversals : "payment_id"
+  collection_batches ||--o{ payments : "collection_batch_id"
+  collectors ||--o{ payments : "collector_id"
+  subscribers ||--o{ payments : "subscriber_id"
+  payments ||--o{ receipts : "payment_id"
+
+%% Collections
+erDiagram
+  collection_areas {
+    integer id PK
+    varchar_20_ code
+    varchar_100_ name
+  }
+  collectors {
+    integer id PK
+    varchar_20_ code
+  }
+  collector_assignments {
+    integer id PK
+    integer collector_id FK
+    integer area_id FK
+    integer assigned_by FK
+  }
+  collection_batches {
+    integer id PK
+    varchar_20_ batch_no
+    integer collector_id FK
+    integer area_id FK
+    date collection_date
+    enum_batch_status status
+    bigint difference
+    integer created_by FK
+    integer reconciled_by FK
+    integer closed_by FK
+  }
+  batch_accounts {
+    integer id PK
+    integer batch_id FK
+    integer subscriber_id FK
+    bigint collected_amount
+  }
+  collector_remittances {
+    integer id PK
+    varchar_20_ remittance_no
+    integer batch_id FK
+    integer collector_id FK
+    bigint amount
+    integer received_by FK
+  }
+  subscribers
+  payments
+  service_accounts
+  collection_batches ||--o{ batch_accounts : "batch_id"
+  subscribers ||--o{ batch_accounts : "subscriber_id"
+  collection_areas ||--o{ collection_batches : "area_id"
+  collectors ||--o{ collection_batches : "collector_id"
+  collection_areas ||--o{ collector_assignments : "area_id"
+  collectors ||--o{ collector_assignments : "collector_id"
+  collection_batches ||--o{ collector_remittances : "batch_id"
+  collectors ||--o{ collector_remittances : "collector_id"
+  collection_batches ||--o{ payments : "collection_batch_id"
+  collectors ||--o{ payments : "collector_id"
+  collectors ||--o{ service_accounts : "collector_id"
+  collection_areas ||--o{ subscribers : "collection_area_id"
+  collectors ||--o{ subscribers : "collector_id"
+
+%% System
+erDiagram
+  audit_logs {
+    bigint id PK
+    integer actor_id FK
+    varchar_60_ action
+  }
+  application_settings {
+    varchar_60_ key PK
+    integer updated_by FK
+  }
+  backup_history {
+    integer id PK
+    varchar_80_ name
+    varchar_12_ status
+    integer created_by FK
+  }
+  number_sequences {
+    varchar_30_ name PK
+  }
