@@ -7,6 +7,8 @@ import type { Content, TableCell, TDocumentDefinitions } from 'pdfmake/interface
 import { config } from '../../config';
 
 const NAVY = '0F2747';
+/** Byte-order mark so spreadsheet programs open UTF-8 CSV files correctly. */
+const BOM = String.fromCharCode(0xfeff);
 type Cell = string | number | null | undefined;
 
 function display(value: Cell, type: ReportColumn['type']): string {
@@ -164,5 +166,5 @@ export function renderCsv(report: ReportData): Buffer {
   const lines = [report.columns.map((c) => escape(c.header)).join(',')];
   for (const row of report.rows) lines.push(report.columns.map((c) => escape(plain(row[c.key], c.type))).join(','));
   if (report.totals) lines.push(report.columns.map((c) => escape(plain(report.totals![c.key], c.type))).join(','));
-  return Buffer.from(`﻿${lines.join('\r\n')}\r\n`, 'utf8');
+  return Buffer.from(BOM + lines.join('\r\n') + '\r\n', 'utf8');
 }

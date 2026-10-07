@@ -245,7 +245,7 @@ function registerIpc(): void {
   });
 
   handle('files:saveText', z.object({ suggestedName: z.string().regex(/^[\w .()-]{1,100}\.csv$/), content: z.string().max(20_000_000) }), (options) =>
-    saveWithDialog(options.suggestedName, `﻿${options.content}`, [{ name: 'CSV', extensions: ['csv'] }]),
+    saveWithDialog(options.suggestedName, String.fromCharCode(0xfeff) + options.content, [{ name: 'CSV', extensions: ['csv'] }]),
   );
 
   handle('app:info', none, () => ({ version: app.getVersion(), electron: process.versions.electron }));

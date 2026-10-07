@@ -24,3 +24,6 @@ nsis:
   shortcutName: BCIS Billing
   artifactName: BCIS-Billing-Setup-${version}.${ext}
 publish: null
+electronVersion: 44.6.0
+npmRebuild: false
+nodeGypRebuild: false

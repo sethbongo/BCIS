@@ -6,9 +6,9 @@
   "author": "BCIS Laboratory Project",
   "main": "./out/main/index.js",
   "scripts": {
-    "dev": "electron-vite dev",
-    "build": "electron-vite build",
-    "start": "electron-vite preview",
+    "dev": "node ../../scripts/electron-vite.mjs dev",
+    "build": "node ../../scripts/electron-vite.mjs build",
+    "start": "node ../../scripts/electron-vite.mjs preview",
     "typecheck": "tsc -p tsconfig.node.json && tsc -p tsconfig.web.json",
     "dist": "electron-builder --win --config electron-builder.yml"
   },

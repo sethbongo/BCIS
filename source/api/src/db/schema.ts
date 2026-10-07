@@ -250,7 +250,7 @@ export const servicePlans = pgTable(
     createdAt: createdAt(),
     updatedAt: createdAt(),
   },
-  (t) => [check('service_plans_price_ck', sql`monthly_price > 0 and installation_fee >= 0 and reconnection_fee >= 0`)],
+  () => [check('service_plans_price_ck', sql`monthly_price > 0 and installation_fee >= 0 and reconnection_fee >= 0`)],
 );
 
 export const serviceAccounts = pgTable(

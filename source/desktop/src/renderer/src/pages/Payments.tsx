@@ -151,7 +151,8 @@ export function ReceivePaymentPage() {
   const receipt = usePrintReceipt();
 
   const subscriber = useApi<SubscriberDetail>(subscriberId ? `/subscribers/${subscriberId}` : null).data;
-  const invoices = useApi<Paged<InvoiceRow>>(subscriberId ? '/invoices' : null, { subscriberId: subscriberId ?? undefined, status: 'OPEN', sort: 'dueDate', dir: 'asc', pageSize: 100 }).data?.rows ?? [];
+  const invoicePage = useApi<Paged<InvoiceRow>>(subscriberId ? '/invoices' : null, { subscriberId: subscriberId ?? undefined, status: 'OPEN', sort: 'dueDate', dir: 'asc', pageSize: 100 }).data;
+  const invoices = useMemo(() => invoicePage?.rows ?? [], [invoicePage]);
 
   const allocations = useMemo(
     () => (manual ? invoices.filter((i) => (manualAmounts[i.id] ?? 0) > 0).map((i) => ({ invoiceId: i.id, amount: manualAmounts[i.id]! })) : undefined),
